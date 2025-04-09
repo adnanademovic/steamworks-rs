@@ -150,6 +150,41 @@ impl Input {
         }
     }
 
+    /// Reconfigure the controller to use the specified action set layer
+    pub fn activate_action_set_layer_handle(
+        &self,
+        input_handle: sys::InputHandle_t,
+        action_set_handle: sys::InputActionSetHandle_t,
+    ) {
+        unsafe {
+            sys::SteamAPI_ISteamInput_ActivateActionSetLayer(
+                self.input,
+                input_handle,
+                action_set_handle,
+            )
+        }
+    }
+
+    /// Reconfigure the controller to stop using the specified action set layer
+    pub fn deactivate_action_set_layer_handle(
+        &self,
+        input_handle: sys::InputHandle_t,
+        action_set_handle: sys::InputActionSetHandle_t,
+    ) {
+        unsafe {
+            sys::SteamAPI_ISteamInput_DeactivateActionSetLayer(
+                self.input,
+                input_handle,
+                action_set_handle,
+            )
+        }
+    }
+
+    /// Reconfigure the controller to stop using the specified action set layer
+    pub fn deactivate_all_action_set_layers(&self, input_handle: sys::InputHandle_t) {
+        unsafe { sys::SteamAPI_ISteamInput_DeactivateAllActionSetLayers(self.input, input_handle) }
+    }
+
     /// Get the handle of the specified Digital action.
     pub fn get_digital_action_handle(&self, action_name: &str) -> sys::InputDigitalActionHandle_t {
         let name = CString::new(action_name).unwrap();
