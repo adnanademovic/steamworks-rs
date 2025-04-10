@@ -66,6 +66,11 @@ impl Input {
         }
     }
 
+    /// Returns a list of the currently connected controllers
+    pub fn get_controller_for_gamepad_index(&self, index: i32) -> sys::InputHandle_t {
+        unsafe { sys::SteamAPI_ISteamInput_GetControllerForGamepadIndex(self.input, index) }
+    }
+
     /// Allows to load a specific Action Manifest File localy
     pub fn set_input_action_manifest_file_path(&self, path: &str) -> bool {
         let path = CString::new(path).unwrap();
