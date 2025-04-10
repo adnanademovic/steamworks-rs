@@ -43,6 +43,14 @@ impl Input {
         unsafe { sys::SteamAPI_ISteamInput_RunFrame(self.input, false) }
     }
 
+    // Enable SteamInputDeviceConnected_t and SteamInputDeviceDisconnected_t callbacks.
+    //
+    // Each controller that is already connected will generate a device connected
+    // callback when you enable them
+    pub fn enable_device_callbacks(&self) {
+        unsafe { sys::SteamAPI_ISteamInput_EnableDeviceCallbacks(self.input) }
+    }
+
     /// Returns a list of the currently connected controllers
     pub fn get_connected_controllers(&self) -> Vec<sys::InputHandle_t> {
         let mut handles = vec![0_u64; sys::STEAM_INPUT_MAX_COUNT as usize];
@@ -66,7 +74,10 @@ impl Input {
         }
     }
 
-    /// Returns a list of the currently connected controllers
+    /// Returns the associated controller handle for the specified emulated gamepad
+    ///
+    /// Returns the associated controller handle for the specified emulated gamepad.
+    /// Can be used with GetInputTypeForHandle to determine the type of controller using Steam Input Gamepad Emulation.
     pub fn get_controller_for_gamepad_index(&self, index: i32) -> sys::InputHandle_t {
         unsafe { sys::SteamAPI_ISteamInput_GetControllerForGamepadIndex(self.input, index) }
     }
@@ -283,6 +294,44 @@ impl Input {
     pub fn shutdown(&self) {
         unsafe {
             sys::SteamAPI_ISteamInput_Shutdown(self.input);
+        }
+    }
+}
+
+const CALLBACK_BASE_ID: i32 = 2800;
+
+#[derive(Clone, Debug)]
+#[cfg_attr(feature = "serde", derive(Serialize, Deserialize))]
+pub struct DeviceConnected {
+    pub handle: InputHandle_t,
+}
+
+unsafe impl Callback for DeviceConnected {
+    const ID: i32 = CALLBACK_BASE_ID + 1;
+    const SIZE: i32 = ::std::mem::size_of::<sys::SteamInputDeviceConnected_t>() as i32;
+
+    unsafe fn from_raw(raw: *mut c_void) -> Self {
+        let val = &mut *(raw as *mut sys::SteamInputDeviceConnected_t);
+        Self {
+            handle: val.m_ulConnectedDeviceHandle,
+        }
+    }
+}
+
+#[derive(Clone, Debug)]
+#[cfg_attr(feature = "serde", derive(Serialize, Deserialize))]
+pub struct DeviceDisconnected {
+    pub handle: InputHandle_t,
+}
+
+unsafe impl Callback for DeviceDisconnected {
+    const ID: i32 = CALLBACK_BASE_ID + 2;
+    const SIZE: i32 = ::std::mem::size_of::<sys::SteamInputDeviceDisconnected_t>() as i32;
+
+    unsafe fn from_raw(raw: *mut c_void) -> Self {
+        let val = &mut *(raw as *mut sys::SteamInputDeviceDisconnected_t);
+        Self {
+            handle: val.m_ulDisconnectedDeviceHandle,
         }
     }
 }
