@@ -8,6 +8,7 @@ pub struct Input<Manager> {
     pub(crate) _inner: Arc<Inner<Manager>>,
 }
 
+#[derive(Copy, Clone, Debug)]
 pub enum InputType {
     Unknown,
     SteamController,
