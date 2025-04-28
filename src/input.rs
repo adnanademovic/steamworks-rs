@@ -309,7 +309,6 @@ pub struct DeviceConnected {
 
 unsafe impl Callback for DeviceConnected {
     const ID: i32 = CALLBACK_BASE_ID + 1;
-    const SIZE: i32 = ::std::mem::size_of::<sys::SteamInputDeviceConnected_t>() as i32;
 
     unsafe fn from_raw(raw: *mut c_void) -> Self {
         let val = &mut *(raw as *mut sys::SteamInputDeviceConnected_t);
@@ -327,7 +326,6 @@ pub struct DeviceDisconnected {
 
 unsafe impl Callback for DeviceDisconnected {
     const ID: i32 = CALLBACK_BASE_ID + 2;
-    const SIZE: i32 = ::std::mem::size_of::<sys::SteamInputDeviceDisconnected_t>() as i32;
 
     unsafe fn from_raw(raw: *mut c_void) -> Self {
         let val = &mut *(raw as *mut sys::SteamInputDeviceDisconnected_t);
