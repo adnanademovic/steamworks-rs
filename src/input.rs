@@ -1,3 +1,4 @@
+use steamworks_sys::{AppId_t, CSteamID};
 use sys::InputHandle_t;
 
 use super::*;
@@ -331,6 +332,42 @@ unsafe impl Callback for DeviceDisconnected {
         let val = &mut *(raw as *mut sys::SteamInputDeviceDisconnected_t);
         Self {
             handle: val.m_ulDisconnectedDeviceHandle,
+        }
+    }
+}
+
+#[derive(Clone, Debug)]
+#[cfg_attr(feature = "serde", derive(Serialize, Deserialize))]
+pub struct ConfigurationLoaded {
+    pub app_id: AppId_t,
+    pub handle: InputHandle_t,
+    // pub m_ulMappingCreator: CSteamID,
+    pub major_revision: u32,
+    pub minor_revision: u32,
+    pub uses_steam_input_api: bool,
+    pub uses_gamepad_api: bool,
+}
+
+unsafe impl Callback for ConfigurationLoaded {
+    const ID: i32 = CALLBACK_BASE_ID + 3;
+
+    unsafe fn from_raw(raw: *mut c_void) -> Self {
+        let sys::SteamInputConfigurationLoaded_t {
+            m_unAppID,
+            m_ulDeviceHandle,
+            m_ulMappingCreator: _,
+            m_unMajorRevision,
+            m_unMinorRevision,
+            m_bUsesSteamInputAPI,
+            m_bUsesGamepadAPI,
+        } = &mut *(raw as *mut sys::SteamInputConfigurationLoaded_t);
+        Self {
+            app_id: *m_unAppID,
+            handle: *m_ulDeviceHandle,
+            major_revision: *m_unMajorRevision,
+            minor_revision: *m_unMinorRevision,
+            uses_steam_input_api: *m_bUsesSteamInputAPI,
+            uses_gamepad_api: *m_bUsesGamepadAPI,
         }
     }
 }
