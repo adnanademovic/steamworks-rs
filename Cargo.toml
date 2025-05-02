@@ -1,6 +1,6 @@
 [package]
 name = "steamworks"
-version = "0.11.0"
+version = "0.11.0-2025-05-02-ud"
 authors = ["Thinkofname"]
 description = "Provides rust friendly bindings to the steamworks sdk"
 license = "MIT / Apache-2.0"
@@ -10,6 +10,7 @@ keywords = ["steam", "gamedev"]
 categories = ["games"]
 edition = "2021"
 rust-version = "1.73.0"
+publish = ["ursadev"]
 
 [features]
 default = []
@@ -18,14 +19,15 @@ image = ["dep:image"]
 
 [workspace]
 members = [
-    "./steamworks-sys",
-    "examples/chat-example",
-    "examples/workshop",
-    "examples/lobby", "examples/networking-messages",
+  "./steamworks-sys",
+  "examples/chat-example",
+  "examples/workshop",
+  "examples/lobby",
+  "examples/networking-messages",
 ]
 
 [dependencies]
-steamworks-sys = { path = "./steamworks-sys", version = "0.11.0" }
+steamworks-sys = { path = "./steamworks-sys", version = "0.11.0-2025-05-02-ud", registry = "ursadev" }
 thiserror = "2.0"
 bitflags = "2.9"
 serde = { version = "1.0", features = ["derive"], optional = true }

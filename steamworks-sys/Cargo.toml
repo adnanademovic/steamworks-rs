@@ -1,6 +1,6 @@
 [package]
 name = "steamworks-sys"
-version = "0.11.0"
+version = "0.11.0-2025-05-02-ud"
 authors = ["Thinkofname"]
 build = "build.rs"
 description = "Provides raw bindings to the steamworks sdk"
@@ -9,6 +9,7 @@ repository = "https://github.com/Noxime/steamworks-rs"
 documentation = "https://docs.rs/steamworks-sys"
 edition = "2021"
 rust-version = "1.73.0"
+publish = ["ursadev"]
 
 [features]
 default = []
