@@ -1,6 +1,6 @@
 [package]
 name = "steamworks-sys"
-version = "0.11.0-2025-05-02-ud"
+version = "0.11.0-2025-05-17-ud"
 authors = ["Thinkofname"]
 build = "build.rs"
 description = "Provides raw bindings to the steamworks sdk"

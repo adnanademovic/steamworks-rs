@@ -360,14 +360,14 @@ unsafe impl Callback for ConfigurationLoaded {
             m_unMinorRevision,
             m_bUsesSteamInputAPI,
             m_bUsesGamepadAPI,
-        } = &mut *(raw as *mut sys::SteamInputConfigurationLoaded_t);
+        } = *(raw as *mut sys::SteamInputConfigurationLoaded_t);
         Self {
-            app_id: *m_unAppID,
-            handle: *m_ulDeviceHandle,
-            major_revision: *m_unMajorRevision,
-            minor_revision: *m_unMinorRevision,
-            uses_steam_input_api: *m_bUsesSteamInputAPI,
-            uses_gamepad_api: *m_bUsesGamepadAPI,
+            app_id: m_unAppID,
+            handle: m_ulDeviceHandle,
+            major_revision: m_unMajorRevision,
+            minor_revision: m_unMinorRevision,
+            uses_steam_input_api: m_bUsesSteamInputAPI,
+            uses_gamepad_api: m_bUsesGamepadAPI,
         }
     }
 }
