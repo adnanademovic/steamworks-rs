@@ -49,6 +49,9 @@ pub enum CallbackResult {
     GSClientKick(GSClientKick),
     GSClientGroupStatus(GSClientGroupStatus),
     NewUrlLaunchParameters(NewUrlLaunchParameters),
+    DeviceConnected(DeviceConnected),
+    DeviceDisconnected(DeviceDisconnected),
+    ConfigurationLoaded(ConfigurationLoaded),
 }
 
 impl CallbackResult {
@@ -120,6 +123,11 @@ impl CallbackResult {
             }
             NewUrlLaunchParameters::ID => {
                 Self::NewUrlLaunchParameters(NewUrlLaunchParameters::from_raw(data))
+            }
+            DeviceConnected::ID => Self::DeviceConnected(DeviceConnected::from_raw(data)),
+            DeviceDisconnected::ID => Self::DeviceDisconnected(DeviceDisconnected::from_raw(data)),
+            ConfigurationLoaded::ID => {
+                Self::ConfigurationLoaded(ConfigurationLoaded::from_raw(data))
             }
             _ => return None,
         })

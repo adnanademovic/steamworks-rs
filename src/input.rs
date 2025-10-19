@@ -34,6 +34,10 @@ impl Input {
         unsafe { sys::SteamAPI_ISteamInput_Init(self.input, explicitly_call_run_frame) }
     }
 
+    pub fn enable_device_callbacks(&self) {
+        unsafe { sys::SteamAPI_ISteamInput_EnableDeviceCallbacks(self.input) }
+    }
+
     /// Synchronize API state with the latest Steam Input action data available. This
     /// is performed automatically by SteamAPI_RunCallbacks, but for the absolute lowest
     /// possible latency, you call this directly before reading controller state.
@@ -246,3 +250,46 @@ impl Input {
         }
     }
 }
+
+#[derive(Clone, Debug)]
+pub struct DeviceConnected {
+    pub handle: InputHandle_t,
+}
+
+impl_callback!(cb: SteamInputDeviceConnected_t => DeviceConnected {
+    Self {
+        handle: cb.m_ulConnectedDeviceHandle,
+    }
+});
+
+#[derive(Clone, Debug)]
+pub struct DeviceDisconnected {
+    pub handle: InputHandle_t,
+}
+
+impl_callback!(cb: SteamInputDeviceDisconnected_t => DeviceDisconnected {
+    Self {
+        handle: cb.m_ulDisconnectedDeviceHandle,
+    }
+});
+
+#[derive(Clone, Debug)]
+pub struct ConfigurationLoaded {
+    pub app_id: sys::AppId_t,
+    pub handle: InputHandle_t,
+    pub major_revision: u32,
+    pub minor_revision: u32,
+    pub uses_steam_input_api: bool,
+    pub uses_gamepad_api: bool,
+}
+
+impl_callback!(cb: SteamInputConfigurationLoaded_t => ConfigurationLoaded {
+    Self {
+        app_id: cb.m_unAppID,
+        handle: cb.m_ulDeviceHandle,
+        major_revision: cb.m_unMajorRevision,
+        minor_revision: cb.m_unMinorRevision,
+        uses_steam_input_api: cb.m_bUsesSteamInputAPI,
+        uses_gamepad_api: cb.m_bUsesGamepadAPI,
+    }
+});
