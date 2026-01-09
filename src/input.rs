@@ -127,6 +127,9 @@ impl Input {
         unsafe {
             let glyph_path =
                 sys::SteamAPI_ISteamInput_GetGlyphForActionOrigin_Legacy(self.input, action_origin);
+            if glyph_path.is_null() {
+                return String::new();
+            }
             let glyph_path = CStr::from_ptr(glyph_path);
             glyph_path.to_string_lossy().into_owned()
         }
@@ -137,6 +140,9 @@ impl Input {
         unsafe {
             let name_path =
                 sys::SteamAPI_ISteamInput_GetStringForActionOrigin(self.input, action_origin);
+            if name_path.is_null() {
+                return String::new();
+            }
             let name_path = CStr::from_ptr(name_path);
             name_path.to_string_lossy().into_owned()
         }
