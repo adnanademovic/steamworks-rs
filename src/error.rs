@@ -384,10 +384,12 @@ pub enum SteamError {
     WGNetworkSendExceeded,
 }
 
-impl From<sys::EResult> for SteamError {
-    fn from(r: sys::EResult) -> Self {
-        match r {
-            sys::EResult::k_EResultOK => panic!("EResult::k_EResultOK isn't an error"),
+impl TryFrom<sys::EResult> for SteamError {
+    type Error = &'static str;
+
+    fn try_from(r: sys::EResult) -> Result<Self, Self::Error> {
+        Ok(match r {
+            sys::EResult::k_EResultOK => return Err("EResult::k_EResultOK isn't an error"),
             sys::EResult::k_EResultFail => SteamError::Generic,
             sys::EResult::k_EResultNoConnection => SteamError::NoConnection,
             sys::EResult::k_EResultInvalidPassword => SteamError::InvalidPassword,
@@ -516,8 +518,8 @@ impl From<sys::EResult> for SteamError {
             sys::EResult::k_EResultTooManyPending => SteamError::TooManyPending,
             sys::EResult::k_EResultNoSiteLicensesFound => SteamError::NoSiteLicensesFound,
             sys::EResult::k_EResultWGNetworkSendExceeded => SteamError::WGNetworkSendExceeded,
-            _ => unreachable!(),
-        }
+            _ => SteamError::Generic,
+        })
     }
 }
 

@@ -130,12 +130,12 @@ impl User {
     /// ISteamUserAuth/AuthenticateUserTicket Web API.
     ///
     /// The calling application must wait for the
-    /// `TicketForWebApiResponse` callback generated  
+    /// `TicketForWebApiResponse` callback generated
     /// by the API call to access the ticket.
-    ///  
+    ///
     /// It is best practice to use an identity string for
     /// each service that will consume tickets.
-    ///   
+    ///
     /// This API can not be used to create a ticket for
     /// use by the BeginAuthSession/ISteamGameServer::BeginAuthSession.
     /// Use the `authentication_session_ticket` API instead
@@ -383,12 +383,12 @@ impl_callback!(_cb: SteamServersConnected_t => SteamServersConnected {
 #[cfg_attr(feature = "serde", derive(Serialize, Deserialize))]
 pub struct SteamServersDisconnected {
     /// The reason we were disconnected from the Steam servers
-    pub reason: SteamError,
+    pub reason: Option<SteamError>,
 }
 
 impl_callback!(cb: SteamServersDisconnected_t => SteamServersDisconnected {
     Self {
-        reason: cb.m_eResult.into(),
+        reason: cb.m_eResult.try_into().ok(),
     }
 });
 
@@ -397,14 +397,14 @@ impl_callback!(cb: SteamServersDisconnected_t => SteamServersDisconnected {
 #[cfg_attr(feature = "serde", derive(Serialize, Deserialize))]
 pub struct SteamServerConnectFailure {
     /// The reason we failed to connect to the Steam servers
-    pub reason: SteamError,
+    pub reason: Option<SteamError>,
     /// Whether we are still retrying the connection.
     pub still_retrying: bool,
 }
 
 impl_callback!(cb: SteamServerConnectFailure_t => SteamServerConnectFailure {
     Self {
-        reason: cb.m_eResult.into(),
+        reason: cb.m_eResult.try_into().ok(),
         still_retrying: cb.m_bStillRetrying,
     }
 });

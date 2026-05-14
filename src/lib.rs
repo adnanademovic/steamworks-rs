@@ -71,7 +71,7 @@ pub(crate) fn to_steam_result(result: sys::EResult) -> SResult<()> {
     if result == sys::EResult::k_EResultOK {
         Ok(())
     } else {
-        Err(result.into())
+        result.try_into().map_or(Ok(()), Err)
     }
 }
 

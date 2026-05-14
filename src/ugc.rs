@@ -495,7 +495,7 @@ impl_callback!(cb: DownloadItemResult_t => DownloadItemResult {
         published_file_id: PublishedFileId(cb.m_nPublishedFileId),
         error: match cb.m_eResult {
             sys::EResult::k_EResultOK => None,
-            error => Some(error.into()),
+            error => error.try_into().ok(),
         },
     }
 });
@@ -801,7 +801,7 @@ impl UGC {
                     } else if v.m_eResult != sys::EResult::k_EResultNone
                         && v.m_eResult != sys::EResult::k_EResultOK
                     {
-                        Err(v.m_eResult.into())
+                        v.m_eResult.try_into().map_or(Ok(()), Err)
                     } else {
                         Ok(())
                     })
@@ -1005,7 +1005,7 @@ impl UpdateHandle {
                     cb(if io_error {
                         Err(SteamError::IOFailure)
                     } else if v.m_eResult != sys::EResult::k_EResultOK {
-                        Err(v.m_eResult.into())
+                        Err(v.m_eResult.try_into().expect("Should not fail"))
                     } else {
                         Ok((
                             PublishedFileId(v.m_nPublishedFileId),
@@ -1430,7 +1430,9 @@ impl QueryHandle {
                         return;
                     } else if v.m_eResult != sys::EResult::k_EResultOK {
                         sys::SteamAPI_ISteamUGC_ReleaseQueryUGCRequest(ugc, handle);
-                        cb(Err(v.m_eResult.into()));
+                        cb(Err(v.m_eResult.try_into().expect(
+                            "steamworks::ugc::UpdateHandle::fetch failed with eResult",
+                        )));
                         return;
                     }
 

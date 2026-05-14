@@ -107,7 +107,7 @@ impl NetworkingMessages {
             return Ok(());
         }
 
-        Err(result.into())
+        result.try_into().map_or(Ok(()), Err)
     }
 
     /// Reads the next message that has been sent from another user on the given channel.

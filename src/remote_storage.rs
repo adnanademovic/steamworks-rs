@@ -223,7 +223,9 @@ impl SteamFile {
                         return;
                     }
                     if v.m_eResult != sys::EResult::k_EResultOK {
-                        cb(Err(v.m_eResult.into()));
+                        cb(Err(v.m_eResult.try_into().expect(
+                            "steamworks::remote_storage::SteamFile::share failed with eResult",
+                        )));
                         return;
                     }
 
