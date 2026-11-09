@@ -299,6 +299,10 @@ impl Utils {
             )
         }
     }
+
+    pub fn dismiss_floating_gamepad_text_input(&self) -> bool {
+        unsafe { sys::SteamAPI_ISteamUtils_DismissFloatingGamepadTextInput(self.utils) }
+    }
 }
 
 pub(crate) struct SteamParamStringArray(Vec<*mut i8>);
